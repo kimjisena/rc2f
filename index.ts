@@ -1,5 +1,6 @@
 import BabelParser from "@babel/parser";
-import { handleExports, isReactClassComponent } from "./src/lib";
+import { handleClassDeclaration, handleOtherDeclarations } from "./src/lib";
+
 // 1. read input file
 
 const inputFilePath =
@@ -21,24 +22,20 @@ const ast = BabelParser.parse(inputFileContent, {
 // console.log(ast);
 ast.forEach((stmt, idx, _) => {
   console.log(stmt.type);
-
   if (
     stmt.type === "ImportDeclaration" ||
     stmt.type === "ExportNamedDeclaration" ||
-    stmt.type === "ExportDefaultDeclaration"
+    stmt.type === "ExportDefaultDeclaration" ||
+    stmt.type === "VariableDeclaration" ||
+    stmt.type === "FunctionDeclaration"
   ) {
     const start: number = stmt.start!;
     const end: number = stmt.end!;
     const declaration = inputFileContent.slice(start, end + 1);
-    handleExports(stmt.type, declaration);
+    handleOtherDeclarations(stmt.type, declaration);
   }
   if (stmt.type === "ClassDeclaration") {
-    // check if it's a react class component
-    if (isReactClassComponent(stmt)) {
-      // process react class component
-    } else {
-      throw new Error(`${inputFilePath} is not a React class component`);
-    }
+    handleClassDeclaration(stmt);
   }
 });
 // 3. transform class to function
