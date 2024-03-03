@@ -5,4 +5,10 @@ class SimpleComponent extends React.Component {
     return <p>Hello from SimpleComponent!</p>;
   }
 }
+export function help() {
+  console.log("help me");
+}
+export const power = {
+  level: 0,
+};
 export default SimpleComponent;
