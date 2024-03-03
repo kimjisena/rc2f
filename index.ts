@@ -8,7 +8,7 @@ import {
 // 1. read input file
 
 const inputFilePath =
-  "/Users/0xrafikii/Documents/Playground/Scripts/rc2f/examples/SimpleComponent2.jsx";
+  "/Users/0xrafikii/Documents/Playground/Scripts/rc2f/examples/RealWorldComponent.jsx";
 const inputFile = Bun.file(inputFilePath);
 console.log("read", inputFile.size, "bytes of file type", inputFile.type);
 
@@ -18,7 +18,7 @@ const inputFileContent = await inputFile.text();
 // 2. parse content of input file
 
 const ast = BabelParser.parse(inputFileContent, {
-  sourceFilename: "SimpleComponent2.jsx",
+  sourceFilename: "RealWorldComponent.jsx",
   sourceType: "module",
   plugins: ["jsx"],
 }).program.body;

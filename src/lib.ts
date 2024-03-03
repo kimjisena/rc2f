@@ -30,6 +30,7 @@ export function handleOtherDeclarations(type: string, slice: string) {
       GLOBALVARIABLES.add(slice);
       break;
     case "FunctionDeclaration":
+      GLOBALVARIABLES.add(slice);
       break;
     case "ExportNamedDeclaration":
       EXPORTNAMEDDECLARATION.add(slice);
@@ -93,6 +94,7 @@ export function handleClassDeclaration(stmt: ClassDeclaration, source: string) {
       }
     });
   } else {
+    console.log("not a react component");
     throw new Error(`${inputFilePath} is not a React class component`);
   }
 }
@@ -114,9 +116,8 @@ export function generateFunctionComponent() {
 
   let imports = "";
   Array.from(IMPORTDECLARATIONS).forEach((decl, idx, _) => {
-    if (decl.includes("react")) {
+    if (decl.includes('from "react"') || decl.includes("from 'react'")) {
       decl = decl.replace("Component", "");
-
       let frag1 = decl.split("{");
       let frag2 = frag1[1].split("}");
       let result = frag1[0] + `${"{ useState, " + frag2[0] + "}"}` + frag2[1];
@@ -126,6 +127,16 @@ export function generateFunctionComponent() {
     }
   });
   outPutFile += imports;
+
+  let globalVars = "";
+  Array.from(GLOBALVARIABLES).forEach((decl, idx, _) => {
+    if (decl.includes("var ")) {
+      decl = decl.replace("var ", "let ");
+    }
+    globalVars += decl;
+  });
+
+  outPutFile += globalVars;
 
   // format with prettier
   prettier.format(outPutFile, { parser: "babel" }).then((val) => {
