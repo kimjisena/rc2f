@@ -176,3 +176,6 @@ dist
 
 # Binary output
 bin/
+
+# Proprietary
+examples/Real*
